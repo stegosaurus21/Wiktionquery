@@ -310,13 +310,12 @@ Public Class MainFrame
         auxBrowser.Width = Width + 20
         display.Width = Width - 60
         If x + Width > Screen.PrimaryScreen.WorkingArea.Width Then
-            Left = x - Width
-
+            Left = Screen.PrimaryScreen.WorkingArea.Width - Width
         Else
             Left = x
         End If
         If y + Height > Screen.PrimaryScreen.WorkingArea.Height Then
-            Top = y - Height
+            Top = Screen.PrimaryScreen.WorkingArea.Height - Height
         Else
             Top = y
         End If

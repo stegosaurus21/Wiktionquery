@@ -131,7 +131,7 @@ Partial Class MainFrame
         Me.Version101ToolStripMenuItem.Enabled = False
         Me.Version101ToolStripMenuItem.Name = "Version101ToolStripMenuItem"
         Me.Version101ToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
-        Me.Version101ToolStripMenuItem.Text = "Version 1.0.3"
+        Me.Version101ToolStripMenuItem.Text = "Version 1.0.4"
         '
         'ghost
         '

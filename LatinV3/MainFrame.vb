@@ -32,7 +32,7 @@ Public Class MainFrame
     Dim firstopen As Boolean = False
     Dim prev As New List(Of String)
     Dim prev_ind As Integer
-    Dim shift As Boolean = False
+    Dim ck As Boolean = False
     Dim ctrl As Boolean = False
     Dim rctrl As Boolean = False
 
@@ -43,40 +43,35 @@ Public Class MainFrame
             Return
         End If
 
-        If Key = Keys.LShiftKey Then
-            shift = True
-            If Visible And ctrl Then
-                animateHide.Enabled = True
-            End If
+        If Key = Keys.C Then
+            ck = True
         End If
         If Key = Keys.LControlKey Then
             ctrl = True
-            If Visible And shift Then
-                animateHide.Enabled = True
-            End If
         End If
         If Key = Keys.RControlKey Then
             rctrl = True
         End If
-        If shift And ctrl And Not Visible Then
+        If ck And ctrl And Not Visible Then
             holdTimer.Enabled = True
-        End If
-        If Key = Keys.M And (ctrl Or rctrl) And Visible Then
-            moveTimer.Enabled = Not moveTimer.Enabled
         End If
 
     End Sub
 
     Private Sub kbh_KeyUp(Key As Keys) Handles kbh.KeyUp
 
-        If Key = Keys.LShiftKey Then
+        If Key = Keys.C Then
             holdTimer.Enabled = False
-            shift = False
+            ck = False
         End If
 
         If Key = Keys.LControlKey Then
             holdTimer.Enabled = False
             ctrl = False
+        End If
+
+        If Key = Keys.RControlKey Then
+            rctrl = False
         End If
 
     End Sub
@@ -393,7 +388,16 @@ Public Class MainFrame
 
         x = Left
         y = Top
+    End Sub
 
+    Private Sub MainFrame_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+        If e.KeyCode = Keys.M And e.Modifiers = Keys.Control Then
+            moveTimer.Enabled = Not moveTimer.Enabled
+        End If
+        If e.KeyCode = Keys.Escape Then
+            moveTimer.Enabled = False
+            animateHide.Enabled = True
+        End If
     End Sub
 End Class
 

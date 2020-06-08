@@ -118,19 +118,19 @@ Partial Class MainFrame
         '
         Me.cms.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ExitToolStripMenuItem, Me.Version101ToolStripMenuItem})
         Me.cms.Name = "cms"
-        Me.cms.Size = New System.Drawing.Size(181, 70)
+        Me.cms.Size = New System.Drawing.Size(140, 48)
         '
         'ExitToolStripMenuItem
         '
         Me.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem"
-        Me.ExitToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.ExitToolStripMenuItem.Size = New System.Drawing.Size(139, 22)
         Me.ExitToolStripMenuItem.Text = "Exit"
         '
         'Version101ToolStripMenuItem
         '
         Me.Version101ToolStripMenuItem.Enabled = False
         Me.Version101ToolStripMenuItem.Name = "Version101ToolStripMenuItem"
-        Me.Version101ToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.Version101ToolStripMenuItem.Size = New System.Drawing.Size(139, 22)
         Me.Version101ToolStripMenuItem.Text = "Version 1.0.4"
         '
         'ghost

@@ -117,7 +117,7 @@ Public Class MainFrame
     End Sub
 
     'Actual processing starts here
-    Dim parts As New List(Of String)({"Adjective", "Adverb", "Ambiposition", "Article", "Circumposition", "Classifier", "Conjunction", "Contraction", "Counter", "Determiner", "Ideophone", "Interjection", "Noun", "Numeral", "Participle", "Particle", "Postposition", "Preposition", "Pronoun", "Proper noun", "Verb"})
+    Dim parts As New List(Of String)({"Etymology", "Adjective", "Adverb", "Ambiposition", "Article", "Circumposition", "Classifier", "Conjunction", "Contraction", "Counter", "Determiner", "Ideophone", "Interjection", "Noun", "Numeral", "Participle", "Particle", "Postposition", "Preposition", "Pronoun", "Proper noun", "Verb"})
 
     Private Sub auxBrowser_DocumentCompleted(sender As Object, e As WebBrowserDocumentCompletedEventArgs) Handles auxBrowser.DocumentCompleted
 
@@ -125,6 +125,22 @@ Public Class MainFrame
 
         'Look for the start of the Latin section
         Try
+
+            If auxBrowser.Document.GetElementById("Latin") = Nothing OrElse auxBrowser.Document.GetElementById("Latin").Parent = Nothing OrElse auxBrowser.Document.GetElementById("Latin").Parent.NextSibling = Nothing Then
+
+                If Not qterm.ToLower = qterm Then
+                    prev.RemoveAt(prev_ind)
+                    prev_ind -= 1
+                    auxBrowser.Navigate("https://en.wiktionary.org/wiki/" + qterm.Replace("ā", "a").Replace("ē", "e").Replace("ī", "i").Replace("ō", "o").Replace("ū", "u").ToLower)
+                    Return
+                End If
+                display.Text = "Not a Latin word. | " & qterm
+                displayMem = "Not a Latin word. | " & qterm
+                ghost.Select()
+                Return
+
+            End If
+
             lStart = auxBrowser.Document.GetElementById("Latin").Parent.NextSibling
         Catch
             If Not qterm.ToLower = qterm Then
@@ -152,13 +168,40 @@ Public Class MainFrame
 
             Do Until (lStart.TagName = "H2")
 
+                If lStart.FirstChild = Nothing Then
+
+                    lStart = lStart.NextSibling
+
+                    If lStart = Nothing Then
+                        Exit Do
+                    End If
+
+                    Continue Do
+                End If
+
                 Try
 
-                    'If you see the start of a definition (which is like 'Verb' or 'Participle' on the webpage), add it to the list of things to display (which is just a string because HTML)
+                    'If you see the start of a definition (which is like 'Verb' or 'Participle' on the webpage), or Etymology, add it to the list of things to display (which is just a string because HTML)
                     If lStart.FirstChild.TagName = "SPAN" And parts.Contains(lStart.FirstChild.InnerText) Then
 
-                        str = str & lStart.OuterHtml & vbNewLine & lStart.NextSibling.OuterHtml & vbNewLine & lStart.NextSibling.NextSibling.OuterHtml & vbNewLine
-                        senses += 1
+                        If lStart.FirstChild.InnerText = "Etymology" Then
+
+                            str = str & lStart.OuterHtml & vbNewLine & lStart.NextSibling.OuterHtml & vbNewLine
+
+                        Else
+
+                            str = str & lStart.OuterHtml & vbNewLine & lStart.NextSibling.OuterHtml & vbNewLine & lStart.NextSibling.NextSibling.OuterHtml & vbNewLine
+
+                            Try
+                                If lStart.NextSibling.NextSibling.NextSibling.FirstChild.InnerText = "Declension" Then
+                                    str = str & lStart.NextSibling.NextSibling.NextSibling.OuterHtml & vbNewLine & lStart.NextSibling.NextSibling.NextSibling.NextSibling.OuterHtml & vbNewLine
+                                End If
+                            Catch
+                            End Try
+
+                            senses += 1
+
+                        End If
 
                     End If
 
@@ -304,15 +347,15 @@ Public Class MainFrame
         auxBrowser.Height = Height - 25
         auxBrowser.Width = Width + 20
         display.Width = Width - 60
-        If x + Width > Screen.PrimaryScreen.WorkingArea.Width Then
-            Left = Screen.PrimaryScreen.WorkingArea.Width - Width
-        Else
+        If x + Width < Screen.PrimaryScreen.WorkingArea.Width Then
             Left = x
-        End If
-        If y + Height > Screen.PrimaryScreen.WorkingArea.Height Then
-            Top = Screen.PrimaryScreen.WorkingArea.Height - Height
         Else
+            Left = Screen.PrimaryScreen.WorkingArea.Width - Width
+        End If
+        If y + Height < Screen.PrimaryScreen.WorkingArea.Height Then
             Top = y
+        Else
+            Top = Screen.PrimaryScreen.WorkingArea.Height - Height
         End If
     End Sub
 
@@ -394,6 +437,13 @@ Public Class MainFrame
         If e.KeyCode = Keys.M And e.Modifiers = Keys.Control Then
             moveTimer.Enabled = Not moveTimer.Enabled
         End If
+        If e.KeyCode = Keys.Escape Then
+            moveTimer.Enabled = False
+            animateHide.Enabled = True
+        End If
+    End Sub
+
+    Private Sub auxBrowser_PreviewKeyDown(sender As Object, e As PreviewKeyDownEventArgs) Handles auxBrowser.PreviewKeyDown
         If e.KeyCode = Keys.Escape Then
             moveTimer.Enabled = False
             animateHide.Enabled = True

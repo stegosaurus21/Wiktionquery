@@ -118,7 +118,7 @@ Public Class MainFrame
 
     'Actual processing starts here
     Dim parts As New List(Of String)({"Etymology", "Adjective", "Adverb", "Ambiposition", "Article", "Circumposition", "Classifier", "Conjunction", "Contraction", "Counter", "Determiner", "Ideophone", "Interjection", "Noun", "Numeral", "Participle", "Particle", "Postposition", "Preposition", "Pronoun", "Proper noun", "Verb"})
-
+    Dim punctuation As String = ""
     Private Sub auxBrowser_DocumentCompleted(sender As Object, e As WebBrowserDocumentCompletedEventArgs) Handles auxBrowser.DocumentCompleted
 
         Dim lStart As HtmlElement
@@ -142,7 +142,9 @@ Public Class MainFrame
             End If
 
             lStart = auxBrowser.Document.GetElementById("Latin").Parent.NextSibling
+
         Catch
+
             If Not qterm.ToLower = qterm Then
                 prev.RemoveAt(prev_ind)
                 prev_ind -= 1
@@ -153,6 +155,7 @@ Public Class MainFrame
             displayMem = "Not a Latin word. | " & qterm
             ghost.Select()
             Return
+
         End Try
 
         Dim str As String = ""
@@ -264,11 +267,11 @@ Public Class MainFrame
     </body>
 </html>")
 
-        'Darken the border of the table (readability)
+        'Darken the border of the tables (readability)
         Try
-            auxBrowser.Document.GetElementsByTagName("TABLE")(0).Style =
-                "FONT-SIZE: 95%; BORDER-TOP: #282828 1px solid; BORDER-RIGHT: #282828 1px solid; WIDTH: 100%; BACKGROUND: #282828; BORDER-BOTTOM: #282828 1px solid; TEXT-ALIGN: center; BORDER-LEFT: #282828 1px solid"
-
+            For Each el As HtmlElement In auxBrowser.Document.GetElementsByTagName("TABLE")
+                el.Style = "FONT-SIZE: 95%; BORDER-TOP: #282828 1px solid; BORDER-RIGHT: #282828 1px solid; WIDTH: 100%; BACKGROUND: #282828; BORDER-BOTTOM: #282828 1px solid; TEXT-ALIGN: center; BORDER-LEFT: #282828 1px solid"
+            Next
         Catch
         End Try
 
@@ -307,7 +310,7 @@ Public Class MainFrame
     Private Sub auxBrowser_Navigating(sender As Object, e As WebBrowserNavigatingEventArgs) Handles auxBrowser.Navigating
 
         'UI stuff
-        qterm = e.Url.OriginalString.Replace("https://en.wiktionary.org/wiki/", "").Replace("#Latin", "")
+        qterm = e.Url.OriginalString.Replace("https://en.wiktionary.org/wiki/", "").Replace("#Latin", "").TrimStart(punctuation).TrimEnd(punctuation)
         display.Text = "Querying " & qterm & "..."
         displayMem = "Querying " & qterm & "..."
         ghost.Select()

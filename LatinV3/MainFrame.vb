@@ -89,7 +89,7 @@ Public Class MainFrame
             auxBrowser.Hide()
             prev.Clear()
             prev_ind = -1
-            auxBrowser.Navigate("https://en.wiktionary.org/wiki/" + Clipboard.GetText().Replace("ā", "a").Replace("ē", "e").Replace("ī", "i").Replace("ō", "o").Replace("ū", "u"))
+            auxBrowser.Navigate("https://en.wiktionary.org/wiki/" + Clipboard.GetText().Replace("ā", "a").Replace("ē", "e").Replace("ī", "i").Replace("ō", "o").Replace("ū", "u").TrimStart(punctuation).TrimEnd(punctuation))
         End If
         If Opacity < userOpacity Then
             Opacity = Math.Min(Opacity + 0.1, userOpacity)
@@ -118,7 +118,7 @@ Public Class MainFrame
 
     'Actual processing starts here
     Dim parts As New List(Of String)({"Etymology", "Adjective", "Adverb", "Ambiposition", "Article", "Circumposition", "Classifier", "Conjunction", "Contraction", "Counter", "Determiner", "Ideophone", "Interjection", "Noun", "Numeral", "Participle", "Particle", "Postposition", "Preposition", "Pronoun", "Proper noun", "Verb"})
-    Dim punctuation As String = ""
+    Dim punctuation() As Char = "`~!@#$%^&*()_-+={[}]|\:;""'<,>.?/"
     Private Sub auxBrowser_DocumentCompleted(sender As Object, e As WebBrowserDocumentCompletedEventArgs) Handles auxBrowser.DocumentCompleted
 
         Dim lStart As HtmlElement
@@ -310,7 +310,7 @@ Public Class MainFrame
     Private Sub auxBrowser_Navigating(sender As Object, e As WebBrowserNavigatingEventArgs) Handles auxBrowser.Navigating
 
         'UI stuff
-        qterm = e.Url.OriginalString.Replace("https://en.wiktionary.org/wiki/", "").Replace("#Latin", "").TrimStart(punctuation).TrimEnd(punctuation)
+        qterm = e.Url.OriginalString.Replace("https://en.wiktionary.org/wiki/", "").Replace("#Latin", "")
         display.Text = "Querying " & qterm & "..."
         displayMem = "Querying " & qterm & "..."
         ghost.Select()
